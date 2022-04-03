@@ -34,7 +34,7 @@ public class DocumentationConfig {
 
         OpenAPI openAPI = new OpenAPI();
         openAPI.info(new Info()
-                .title("Tutorial Rest API")
+                .title("Spring Boot REDIS CRUD Rest API")
                 .description(
                         "Documenting Spring Boot REST API with SpringDoc and OpenAPI 3 spec")
                 .version("1.0.0")
