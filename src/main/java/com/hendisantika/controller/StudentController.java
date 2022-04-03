@@ -13,12 +13,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by IntelliJ IDEA.
@@ -61,5 +64,25 @@ public class StudentController {
         List<Student> students = new ArrayList<>();
         studentRepository.findAll().forEach(students::add);
         return new ResponseEntity<>(students, HttpStatus.OK);
+    }
+
+    @PutMapping("/student/{id}")
+    @Operation(summary = "Update student by ID", description = "Update student by ID", operationId = "student")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "ok, successful operation",
+                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = Student.class)))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "403", description = "Forbidden"),
+            @ApiResponse(responseCode = "404", description = "Not found")})
+    public ResponseEntity<Student> updateStudent(@PathVariable(name = "id") String id, @RequestBody Student student) {
+        Optional<Student> std = studentRepository.findById(id);
+        if (std.isPresent()) {
+            Student studentDB = std.get();
+            studentDB.setGrade(student.getGrade());
+            studentDB.setName(student.getName());
+            Student updatedStudent = studentRepository.save(studentDB);
+            return new ResponseEntity<>(updatedStudent, HttpStatus.CREATED);
+        }
+        return null;
     }
 }
