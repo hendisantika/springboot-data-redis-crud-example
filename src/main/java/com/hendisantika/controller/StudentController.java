@@ -12,9 +12,13 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -32,6 +36,20 @@ public class StudentController {
     @Autowired
     private StudentRepository studentRepository;
 
+    @PostMapping("/students")
+    @Operation(summary = "Add New student", description = "Add new data student", operationId = "student")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "ok, successful operation",
+                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = Student.class)))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "403", description = "Forbidden"),
+            @ApiResponse(responseCode = "404", description = "Not found")})
+    public ResponseEntity<Student> createStudent(@RequestBody Student student) {
+        Student savedStudent = studentRepository.save(student);
+        return new ResponseEntity<>(savedStudent, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/students")
     @Operation(summary = "Get all student", description = "Returns a list of student", operationId = "student")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "ok, successful operation",
@@ -39,9 +57,9 @@ public class StudentController {
             @ApiResponse(responseCode = "401", description = "Unauthorized"),
             @ApiResponse(responseCode = "403", description = "Forbidden"),
             @ApiResponse(responseCode = "404", description = "Not found")})
-    @PostMapping("/students")
-    public ResponseEntity<Student> createStudent(@RequestBody Student student) {
-        Student savedStudent = studentRepository.save(student);
-        return new ResponseEntity<>(savedStudent, HttpStatus.CREATED);
+    public ResponseEntity<List<Student>> getStudents() {
+        List<Student> students = new ArrayList<>();
+        studentRepository.findAll().forEach(students::add);
+        return new ResponseEntity<>(students, HttpStatus.OK);
     }
 }
