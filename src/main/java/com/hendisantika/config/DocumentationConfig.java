@@ -40,7 +40,7 @@ public class DocumentationConfig {
                 .version("1.0.0")
                 .contact(new Contact()
                         .name("Hendi Santika")
-                        .url("https://linktr.ee/hendisantika")
+                        .url("https://s.id/hendisantika")
                         .email("hendisantika@yahoo.co.id"))
                 .termsOfService("TOC")
                 .license(new License().name("License").url("https://linktr.ee/hendisantika")));
